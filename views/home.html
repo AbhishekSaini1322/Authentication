@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        .container{
+            display: flex;
+            width: 1000px;
+            justify-content: space-between;
+            margin: auto;
+        }
+        button{
+            background-color: blue;
+            height: 60px;
+            width: 100px;
+            font-size: 20px;
+            cursor: pointer;
+            border-radius: 20px;
+        }
+    </style>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" ></script>
+</head>
+<body>
+    <div class="container">
+        <h1>Welcome To Home </h1>
+        <button data-url="/api/v2/logout" id="logout">Log Out</button>
+    </div>
+    <script>
+         $("#logout").on("click", (e) => {
+        e.preventDefault();
+        
+        debugger;
+        let url = $(e.target).data().url;
+        $.ajax({
+            url: url,
+            method: "post",
+            contentType: "application/json",
+            // data: JSON.stringify(obj),
+            success: (response) => {
+                console.log(response);
+                window.open("login");
+            },
+            // beforeSend: () => {
+
+            // },
+            error: (xhr, status) => {
+                console.log();
+            }
+        });
+    });
+    </script>
+</body>
+</html>

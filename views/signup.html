@@ -1,0 +1,219 @@
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Form</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f7f7f7;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .form-container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 300px;
+        }
+
+        .form-container h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .form-container input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        .form-container button {
+            width: 100%;
+            padding: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .form-container button:hover {
+            background-color: #0056b3;
+        }
+
+        .error-message {
+            color: red;
+            margin-top: 10px;
+            text-align: center;
+            display: none;
+        }
+        
+    </style>
+</head>
+<body>
+
+<div class="form-container">
+    <h2>Registration</h2>
+    <form data-url="api/v2/signup" method="post">
+        <input type="text" id="username" name="username" placeholder="Username" required>
+        <input type="email" id="email" name="email" placeholder="Email" required>
+        <input type="password" id="password" name="password" placeholder="Password" required>
+        <input type="text" id="fullname" name="fullName" placeholder="Full Name" required>
+        <button type="submit">Submit</button>
+        
+        <br/><br/>
+        <span>Already Registered?</span>
+        <a href="/login">Login</a>
+       
+    </form>
+
+</div>
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script>
+
+
+
+    $("form").on("submit", (e) => {
+        e.preventDefault();
+        
+        let fullName = $("#fullname").val();
+        let regex = /^[A-Za-z\s]+$/; // Regex for alphabetic characters and spaces
+        
+        if (!regex.test(fullName)) {
+            $("#error-message").show(); // Show error message
+            return; // Stop form submission
+        } else {
+            $("#error-message").hide(); // Hide error message
+        }
+        
+        let url = $(e.target).data().url;
+        var formData = $(e.target).serializeArray();
+        var obj = {};
+        formData.forEach(
+            (el) => {
+                obj[el.name] = el.value;
+            }
+        );
+        $.ajax({
+            url: url,
+            method: "post",
+            contentType: "application/json",
+            data: JSON.stringify(obj),
+            success: (response) => {
+                console.log(response);
+                window.open("login")
+            },
+            beforeSend: () => {
+
+            },
+            error: (xhr, status) => {
+                console.log();
+            }
+        });
+    });
+</script>
+</body>
+</html>   -->
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      .error {
+        color: red;
+        font-size: 12px;
+      }
+    </style>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  </head>
+  <body>
+    <form id="signupForm" data-url="/api/v2/signup" method="post">
+      <input 
+        type="text" 
+        id="username" 
+        name="username" 
+        placeholder="Username" />
+      <span id="usernameError" class="error"></span>
+
+      <input 
+        type="text" 
+        id="email" 
+        name="email" 
+        placeholder="Email" />
+      <span id="emailError" class="error"></span>
+
+      <input
+        type="text"
+        id="password"
+        name="password"
+        placeholder="Password"
+        minlength="8"
+      />
+      <span id="passwordError" class="error"></span>
+
+      <input
+        type="text"
+        id="fullname"
+        name="fullName"
+        placeholder="Full Name"
+      />
+      <span id="fullnameError" class="error"></span>
+
+      <button type="submit">Submit</button>
+
+      <br /><br />
+      <span>Already Registered?</span>
+      <a href="/accounts/login">Login</a>
+    </form>
+
+    <script>
+      $("form").on("submit", (e) => {
+        e.preventDefault();
+
+        $(".error").html("");
+
+        let url = $(e.target).data().url;
+        var formData = $(e.target).serializeArray();
+        var obj = {};
+        formData.forEach((el) => {
+          obj[el.name] = el.value;
+        });
+        $.ajax({
+          url: url,
+          method: "post",
+          contentType: "application/json",
+          data: JSON.stringify(obj),
+          success: (response) => {
+            console.log(response);
+            if (response.error) {
+              response.errorData.forEach((el) => {
+                $("#" + el.errorField + "Error").html(el.msg);
+              });
+            }
+            if (response.success) {
+              window.open(response.redirectUrl,"_self")
+            }
+          },
+          beforeSend: () => {},
+          error: (xhr, status) => {
+            console.log(status);
+          },
+        });
+      });
+    </script>
+  </body>
+</html>
