@@ -13,31 +13,40 @@ const login = async (req, res) => {
   const user = await User.findOne({ username });
 
   var error = [];
-  if(user.username !== username){
-    error.push(
-        {
-          errorField : "login",
-          msg : "not valid username and password"
-        }
-    ) 
+  if (!user){
+        
   }
 
-  if (error.length > 0) {
-    console.log(error)
-    return res.json({
-      error : true,
-      errorData : error
-    })
-  }
+
+  
 
   try {
     if (!user) {
-      return res.json({ message: "Invalid username or password" });
+    //   return res.json({ message: "Invalid username or password" });
+    error.push(
+        {
+          errorField : "login",
+          msg : "not valid username"
+        }
+    ) 
     }
     const isPasswordValid = await bcrypt.compare(password, user.password);
     if (!isPasswordValid) {
-      return res.json({ message: "Invalid username or password" });
+    //   return res.json({ message: "Invalid username or password" });
+    error.push(
+        {
+          errorField : "login",
+          msg : "not valid  password"
+        }
+    ) 
     }
+    if (error.length > 0) {
+        console.log(error)
+        return res.json({
+          error : true,
+          errorData : error
+        })
+      }
     req.session.user = { id: user._id, username: user.username };
     res.json({
       success: true,
